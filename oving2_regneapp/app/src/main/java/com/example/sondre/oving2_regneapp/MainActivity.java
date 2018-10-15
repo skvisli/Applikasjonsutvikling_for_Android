@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     EditText editText_answ;
     EditText editText_upper_limit;
     String toast_text;
-    String random_num;
     boolean nextNum;
 
     public static final String ACTION_GET_RANDOM = "com.example.oving2.ACTION_GET_RANDOM";
@@ -36,10 +39,13 @@ public class MainActivity extends AppCompatActivity {
         // setTransformationMethod(null) prevents hiding of characters
         editText_answ.setTransformationMethod(null);
         editText_upper_limit.setTransformationMethod(null);
+
+        setEnterListener();
+
     }
 
-    public void add (View view) {
-        try{
+    public void add(View view) {
+        try {
             int num1 = Integer.parseInt(textView_num1.getText().toString());
             int num2 = Integer.parseInt(textView_num2.getText().toString());
             int answ = Integer.parseInt(editText_answ.getText().toString());
@@ -48,15 +54,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 toast_text = getString(R.string.wrong) + " " + (num1 + num2);
             }
+            setNewNumbers(view);
         } catch (Exception e) {
             toast_text = getString(R.string.unval);
         }
+        editText_answ.setText("");
         Toast.makeText(getApplicationContext(), toast_text, Toast.LENGTH_SHORT).show();
-        setNewNumbers(view);
     }
 
-    public void multiply (View view) {
-        try{
+    public void multiply(View view) {
+        try {
             int num1 = Integer.parseInt(textView_num1.getText().toString());
             int num2 = Integer.parseInt(textView_num2.getText().toString());
             int answ = Integer.parseInt(editText_answ.getText().toString());
@@ -66,14 +73,15 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 toast_text = getString(R.string.wrong) + " " + (num1 * num2);
             }
+            setNewNumbers(view);
         } catch (Exception e) {
             toast_text = getString(R.string.unval);
         }
+        editText_answ.setText("");
         Toast.makeText(getApplicationContext(), toast_text, Toast.LENGTH_SHORT).show();
-        setNewNumbers(view);
     }
 
-    public void setNewNumbers (View view) {
+    public void setNewNumbers(View view) {
         getRandomNumber(view);
         getRandomNumber(view);
     }
@@ -109,5 +117,21 @@ public class MainActivity extends AppCompatActivity {
                 nextNum = !nextNum;
             }
         }
+    }
+
+    // Adds enter button to keyboard when editing editText_upper_limit
+    // Also refreshes the math problem on enter click
+    private void setEnterListener() {
+        editText_upper_limit.setImeOptions(6);
+        editText_upper_limit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    setNewNumbers(v);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 }
