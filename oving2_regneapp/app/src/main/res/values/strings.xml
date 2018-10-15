@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">oving2_regneapp</string>
+    <string name="add">Adder</string>
+    <string name="mult">Multipliser</string>
+    <string name="answ">Svar:</string>
+    <string name="upper_limit">Øvre grense:</string>
+    <string name="correct">Riktig!</string>
+    <string name="wrong">Feil. Riktig svar er</string>
+    <string name="unval">Oppgi et gyldig tall</string>
+    <string name="unval_limit">Oppgi en gyldig øvre grense</string>
+</resources>
