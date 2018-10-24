@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
+public class Adapter extends RecyclerView.Adapter<Adapter.ExampleViewHolder> {
 
     private ArrayList<Person> mExampleList;
     private OnItemClickListener mListener;
@@ -77,7 +77,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         }
     }
 
-    public ExampleAdapter(ArrayList<Person> exampleList) {
+    public Adapter(ArrayList<Person> exampleList) {
         mExampleList = exampleList;
     }
 

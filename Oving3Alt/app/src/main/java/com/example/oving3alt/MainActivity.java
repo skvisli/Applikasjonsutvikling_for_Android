@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<Person> mPersons;
     private RecyclerView mRecyclerView;
-    private ExampleAdapter mAdapter;
+    private Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private Button buttonAddItem;
@@ -61,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
     private void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new ExampleAdapter(mPersons);
+        mAdapter = new Adapter(mPersons);
         mLayoutManager = new LinearLayoutManager(this);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(new ExampleAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
                 changeItem(pos, "Clicked", "Clicked");
