@@ -6,7 +6,15 @@ public class ExampleItem {
 
     public ExampleItem(String line1, String line2) {
         textView_line1 = line1;
-        textView_line2 = line2;
+        textView_line2 = "Bursdag: " + line2;
+    }
+
+    public void changeName(String text) {
+        textView_line1 = text;
+    }
+
+    public void changeBirthday(String text) {
+        textView_line2 = "Bursdag:" + text;
     }
 
     public String getTextView_line1() {
