@@ -5,18 +5,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ExampleAdaper extends RecyclerView.Adapter<ExampleAdaper.ExampleViewHolder> {
+public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
 
-
-    private ArrayList<ExampleItem> mExampleList;
-    private OnItemClickListener mLIstener;
-
+    private ArrayList<Person> mExampleList;
+    private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
         void onItemClick(int pos);
@@ -25,22 +22,23 @@ public class ExampleAdaper extends RecyclerView.Adapter<ExampleAdaper.ExampleVie
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        mLIstener = listener;
+        mListener = listener;
     }
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView1;
-        public TextView textView2;
+        public TextView name;
+        public TextView birthday;
         public ImageView imageViewDelete;
         public ImageView imageViewEdit;
 
 
         public ExampleViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            textView1 = itemView.findViewById(R.id.line1);
-            textView2 = itemView.findViewById(R.id.line2);
+            name = itemView.findViewById(R.id.editText_name);
+            birthday = itemView.findViewById(R.id.editText_birthday);
             imageViewDelete = itemView.findViewById(R.id.imageView_delete);
             imageViewEdit = itemView.findViewById(R.id.imageView_edit);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -79,7 +77,7 @@ public class ExampleAdaper extends RecyclerView.Adapter<ExampleAdaper.ExampleVie
         }
     }
 
-    public ExampleAdaper(ArrayList<ExampleItem> exampleList) {
+    public ExampleAdapter(ArrayList<Person> exampleList) {
         mExampleList = exampleList;
     }
 
@@ -87,16 +85,15 @@ public class ExampleAdaper extends RecyclerView.Adapter<ExampleAdaper.ExampleVie
     @Override
     public ExampleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.example_item, parent, false);
-        ExampleViewHolder evh = new ExampleViewHolder(v, mLIstener);
+        ExampleViewHolder evh = new ExampleViewHolder(v, mListener);
         return evh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExampleViewHolder holder, int position) {
-        ExampleItem currentItem = mExampleList.get(position);
-        holder.textView1.setText(currentItem.getTextView_line1());
-        holder.textView2.setText(currentItem.getTextView_line2());
-
+        Person currentItem = mExampleList.get(position);
+        holder.name.setText(currentItem.getName());
+        holder.birthday.setText(currentItem.getBirthday());
     }
 
     @Override

@@ -22,17 +22,17 @@
 
 
             <TextView
-                android:id="@+id/line1"
+                android:id="@+id/editText_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Line 1"
+                android:text="Name"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/line2"
+                android:id="@+id/editText_birthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Line 2"
+                android:text="Birthday"
                 android:textSize="20sp" />
         </LinearLayout>
 

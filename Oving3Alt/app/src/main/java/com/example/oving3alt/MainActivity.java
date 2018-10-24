@@ -12,12 +12,12 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<ExampleItem> mExampleList;
-    private RecyclerView recyclerView_persons;
-    private ExampleAdaper adapter_persons;
-    private RecyclerView.LayoutManager layoutManager_persons;
+    private ArrayList<Person> mPersons;
+    private RecyclerView mRecyclerView;
+    private ExampleAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
-    private Button buttonAdd;
+    private Button buttonAddItem;
     private EditText editTextName;
     private EditText editTextBirthday;
     private ImageView imageViewCheck;
@@ -28,50 +28,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setWidgets();
         createExampleList();
         buildRecyclerView();
-        setButtons();
     }
 
-    private void createExampleList() {
-        mExampleList = new ArrayList<>();
-        mExampleList.add(new ExampleItem("Sondre Kvisli", "06.01.93"));
-        mExampleList.add(new ExampleItem("Martin Stigen", "08.10.94"));
-        mExampleList.add(new ExampleItem("Sondre Kvisli", "06.01.93"));
-    }
-
-    private void buildRecyclerView() {
-        recyclerView_persons = findViewById(R.id.recycler_view);
-        recyclerView_persons.setHasFixedSize(true);
-        adapter_persons = new ExampleAdaper(mExampleList);
-        layoutManager_persons = new LinearLayoutManager(this);
-
-        recyclerView_persons.setLayoutManager(layoutManager_persons);
-        recyclerView_persons.setAdapter(adapter_persons);
-
-        adapter_persons.setOnItemClickListener(new ExampleAdaper.OnItemClickListener() {
-            @Override
-            public void onItemClick(int pos) {
-                changeItem(pos, "Clicked", "Clicked");
-            }
-
-            @Override
-            public void onDeleteClick(int pos) {
-                removeItem(pos);
-
-            }
-
-            @Override
-            public void onEditClick(int pos) {
-                buttonAdd.setVisibility(View.INVISIBLE);
-                imageViewCheck.setVisibility(View.VISIBLE);
-                editPos = pos;
-            }
-        });
-    }
-
-    private void setButtons() {
-        buttonAdd = findViewById(R.id.button_add);
+    private void setWidgets() {
+        buttonAddItem = findViewById(R.id.button_addItem);
         editTextName = findViewById(R.id.editText_name);
         editTextBirthday = findViewById(R.id.editText_birthday);
         imageViewCheck = findViewById(R.id.imageView_check);
@@ -82,34 +45,79 @@ public class MainActivity extends AppCompatActivity {
                 String birthday = editTextBirthday.getText().toString();
                 changeItem(editPos, name, birthday);
                 imageViewCheck.setVisibility(View.INVISIBLE);
-                buttonAdd.setVisibility(View.VISIBLE);
+                buttonAddItem.setVisibility(View.VISIBLE);
+                emptyTextFields();
             }
         });
     }
 
-    public void add(View view) {
-        int pos = mExampleList.size();
-        String name = editTextName.getText().toString();
-        String birthday = editTextBirthday.getText().toString();
-        insertItem(pos, name, birthday );
-
+    private void createExampleList() {
+        mPersons = new ArrayList<>();
+        mPersons.add(new Person("Sondre Kvisli", "06.01.93"));
+        mPersons.add(new Person("Martin Stigen", "08.10.94"));
+        mPersons.add(new Person("Sondre Kvisli", "06.01.93"));
     }
 
-    private void insertItem(int pos, String name, String birthday) {
-        mExampleList.add(pos, new ExampleItem(name, birthday));
-        adapter_persons.notifyItemInserted(pos);
+    private void buildRecyclerView() {
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mAdapter = new ExampleAdapter(mPersons);
+        mLayoutManager = new LinearLayoutManager(this);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new ExampleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                changeItem(pos, "Clicked", "Clicked");
+            }
+            @Override
+            public void onDeleteClick(int pos) {
+                removeItem(pos);
+            }
+            @Override
+            public void onEditClick(int pos) {
+                buttonAddItem.setVisibility(View.INVISIBLE);
+                imageViewCheck.setVisibility(View.VISIBLE);
+                // Stores position of edited item in global variable for easy access
+                editPos = pos;
+                String name = mPersons.get(pos).getName();
+                String birthday = mPersons.get(pos).getBirthday().replace("Bursdag: ", "");
+                editTextName.setText(name);
+                editTextBirthday.setText(birthday);
+            }
+        });
+    }
+
+    public void addItem(View view) {
+        int pos = mAdapter.getItemCount();
+        String name = editTextName.getText().toString();
+        String birthday = editTextBirthday.getText().toString();
+        mPersons.add(pos, new Person(name, birthday));
+        mAdapter.notifyItemInserted(pos);
+        emptyTextFields();
     }
 
     private void removeItem(int pos) {
-        mExampleList.remove(pos);
-        adapter_persons.notifyItemRemoved(pos);
+        mPersons.remove(pos);
+        mAdapter.notifyItemRemoved(pos);
+        exitEditMode();
     }
 
     private void changeItem(int pos, String name, String birthday) {
-        mExampleList.get(pos).changeName(name);
-        mExampleList.get(pos).changeBirthday(birthday);
-        adapter_persons.notifyItemChanged(pos);
+        mPersons.get(pos).changeName(name);
+        mPersons.get(pos).changeBirthday(birthday);
+        mAdapter.notifyItemChanged(pos);
     }
 
+    private void exitEditMode() {
+        buttonAddItem.setVisibility(View.VISIBLE);
+        imageViewCheck.setVisibility(View.INVISIBLE);
+    }
 
+    private void emptyTextFields() {
+        editTextName.setText("");
+        editTextBirthday.setText("");
+    }
 }
