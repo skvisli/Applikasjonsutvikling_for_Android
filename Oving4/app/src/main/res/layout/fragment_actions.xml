@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActionsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:id="@+id/textView_android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Android"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView_man"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_man" />
+
+    <TextView
+        android:id="@+id/textView_man"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mann"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView_bus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buss"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toEndOf="@+id/textView_man"
+        app:layout_constraintTop_toTopOf="@+id/textView_man" />
+
+    <Button
+        android:id="@+id/button_prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Forrige"
+        app:layout_constraintEnd_toStartOf="@+id/button_next"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_android" />
+
+    <Button
+        android:id="@+id/button_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Neste"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_prev"
+        app:layout_constraintTop_toTopOf="@+id/button_prev" />
+</android.support.constraint.ConstraintLayout>
