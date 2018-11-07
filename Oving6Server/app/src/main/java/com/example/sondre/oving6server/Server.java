@@ -21,19 +21,25 @@ public class Server extends Thread{
 
         try{
             Log.i(TAG,"start server....");
-            ServerSocket serverSocket = new ServerSocket(PORT);
-            Log.i(TAG, serverSocket.getInetAddress().toString());
+            ss = new ServerSocket(PORT);
             Log.i(TAG,"serversocket created, wait for client....");
-            Socket clientSocket = serverSocket.accept();
+            s = ss.accept();
             Log.v(TAG, "client connected...");
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            out = new PrintWriter(s.getOutputStream(), true);
             in = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
+                    new InputStreamReader(s.getInputStream()));
 
-            /*out.println("Welcome client...");//send text to client
+            String inputLine, outputLine;
 
-            String res = in.readLine();//receive text from client
-            Log.i(TAG,"Message from client: " + res);*/
+            while ((inputLine = in.readLine()) != null) {
+                Log.i(TAG,"Message from client: " + inputLine);
+                String[] parts = inputLine.split(",");
+                String answer = Integer.toString(Integer.parseInt(parts[0]) + Integer.parseInt(parts[1]));
+                outputLine = answer;
+                out.println(outputLine);
+                if (outputLine.equals("Bye."))
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }finally{//close sockets!!
