@@ -32,8 +32,7 @@ public class Client implements Runnable {
             out = new PrintWriter(s.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
-            String inputLine, outputLine;
-            out.println(num1 + "," + num2);//send text to client
+            out.println(num1 + "," + num2);
 
             String res = in.readLine();
             Log.i(TAG,res);
