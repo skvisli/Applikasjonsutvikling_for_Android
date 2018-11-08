@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue">#0000FF</color>
+    <array
+        name="background_colors_text">
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Red</item>
+    </array>
+</resources>
