@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedViewModel sharedViewModel;
     TextView textView;
     private LinearLayout linearLayoutWord;
-    private String word1 = "hangman";
+    private String word1 = "abc";
     private TextView[] textViewArray;
 
     @Override
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable HashMap hashMap) {
                 //Log.i("Sondre", hashMap.get('a').toString());
-                isPartOfWord('a', word1);
+                //isPartOfWord('a');
             }
         });
         textViewArray = new TextView[word1.length()];
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-    private void isPartOfWord(char ch, String word) {
-        for (int i = 0; i < word.length(); i++){
-            char c = word.charAt(i);
+    public void isPartOfWord(char ch) {
+        for (int i = 0; i < word1.length(); i++){
+            char c = word1.charAt(i);
             if (ch == c) {
-                Log.i("Sondre", String.valueOf(ch));
+                Log.i("Sondre", "isPartof");
                 addCorrectChar(ch, i);
             }
         }
@@ -68,6 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void addCorrectChar(char ch, int i) {
         textViewArray[i].setText(String.valueOf(ch));
-        Log.i("Sondre", (String.valueOf(textViewArray.length)));
+        Log.i("Sondre", "addCorrectChar");
     }
 }

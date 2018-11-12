@@ -1,19 +1,16 @@
 package com.example.sondre.hangman;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,7 +25,12 @@ public class KeyboardFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private SharedViewModel sharedViewModel;
-    private Button buttonA;
+    private List<Button> buttons;
+    private static final int[] BUTTON_IDS = {
+            R.id.button_a,
+            R.id.button_b,
+            R.id.button_c,
+    };
 
     public KeyboardFragment() {
         // Required empty public constructor
@@ -56,13 +58,17 @@ public class KeyboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_keyboard, container, false);
-        buttonA = view.findViewById(R.id.button_a);
+        buttons = new ArrayList<>(BUTTON_IDS.length);
+        for(int id : BUTTON_IDS) {
+            final Button button = view.findViewById(id);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    ((MainActivity) getActivity()).isPartOfWord(button.getText().charAt(0));
+                }
+            });
+            buttons.add(button);
+        }
 
-        buttonA.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) { sharedViewModel.setKeyPressed('a'); }
-        });
         return view;
     }
 
@@ -105,3 +111,4 @@ public class KeyboardFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 }
+
