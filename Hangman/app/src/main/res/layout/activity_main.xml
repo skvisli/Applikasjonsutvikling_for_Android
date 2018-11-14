@@ -40,4 +40,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_output"></LinearLayout>
 
+    <Button
+        android:id="@+id/button_newWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:onClick="newWord"
+        android:text="Neste ord"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/textView_output"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

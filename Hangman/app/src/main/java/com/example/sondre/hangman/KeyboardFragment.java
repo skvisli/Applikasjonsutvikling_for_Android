@@ -1,10 +1,12 @@
 package com.example.sondre.hangman;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +18,14 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link KeyboardFragment.OnFragmentInteractionListener} interface
+ * {@link KeyboardFragment.OnFragmentKeyPressListener} interface
  * to handle interaction events.
  * Use the {@link KeyboardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class KeyboardFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentKeyPressListener mListener;
     private SharedViewModel sharedViewModel;
     private List<Button> buttons;
     private static final int[] BUTTON_IDS = {
@@ -63,7 +65,9 @@ public class KeyboardFragment extends Fragment {
             final Button button = view.findViewById(id);
             button.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    ((MainActivity) getActivity()).isPartOfWord(button.getText().charAt(0));
+                    mListener.onKeyPress(button.getText().charAt(0));
+                    button.setEnabled(false);
+                    Log.i("Sondre", "clicked");
                 }
             });
             buttons.add(button);
@@ -73,21 +77,21 @@ public class KeyboardFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(char ch) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            //mListener.onFragmentInteraction(ch);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentKeyPressListener) {
+            mListener = (OnFragmentKeyPressListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
@@ -106,9 +110,14 @@ public class KeyboardFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnFragmentKeyPressListener {
+        void onKeyPress(char ch);
+    }
+
+    public void clearKeysPressed() {
+        for (Button button : buttons) {
+            button.setEnabled(true);
+        }
     }
 }
 
