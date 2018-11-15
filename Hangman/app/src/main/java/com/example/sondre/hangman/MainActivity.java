@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,19 +31,23 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     private SharedViewModel sharedViewModel;
     TextView textViewOutput;
     private LinearLayout linearLayoutWord;
-    private String word1 = "abc";
-    private String word2 = "bca";
-    private String word3 = "cba";
-    private String word4 = "bac";
-    private String word5 = "cab";
-    private String word6 = "abcabc";
+    private String word1 = "hestehode";
+    private String word2 = "hårstrikk";
+    private String word3 = "datamaskin";
+    private String word4 = "android";
+    private String word5 = "java";
+    private String word6 = "python";
     private TextView[] textViewArray;
     private Context context;
     private String[] localWord;
+    private ImageView imageViewPole;
     Activity activity;
     View view;
     KeyboardFragment keyboardFragmen;
     private Button buttonNewWord;
+    private int numOfWrongAnswers;
+    private ImageView[] hangman = new ImageView[10];
+
 
     private ArrayList<String> wordList = new ArrayList<>();
     private String currentWord;
@@ -63,6 +68,17 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         wordList.add(word4);
         wordList.add(word5);
         wordList.add(word6);
+
+        hangman[0] = findViewById(R.id.imageView_pole);
+        hangman[1] = findViewById(R.id.imageView_roof);
+        hangman[2] = findViewById(R.id.imageView_rope);
+        hangman[3] = findViewById(R.id.imageView_head);
+        hangman[4] = findViewById(R.id.imageView_torso);
+        hangman[5] = findViewById(R.id.imageView_lArm);
+        hangman[6] = findViewById(R.id.imageView_rArm);
+        hangman[7] = findViewById(R.id.imageView_lLeg);
+        hangman[8] = findViewById(R.id.imageView_rLeg);
+        hangman[9] = findViewById(R.id.imageView_face);
 
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
         buttonNewWord = findViewById(R.id.button_newWord);
@@ -91,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     }
 
     private void buildWordOnScreen(String word) {
+        for (ImageView imageView: hangman) {
+            imageView.setVisibility(View.INVISIBLE);
+        }
         linearLayoutWord.removeAllViews();
         keyboardFragmen.clearKeysPressed();
         textViewArray = new TextView[word.length()];
@@ -105,16 +124,25 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
             linearLayoutWord.addView(textViewArray[i]);
 
             localWord[i] = "";
+            numOfWrongAnswers = 0;
         }
     }
 
     public void isPartOfWord(char ch) {
+        boolean partOfWord = false;
         for (int i = 0; i < currentWord.length(); i++) {
             char c = currentWord.charAt(i);
             if (ch == c) {
                 //Log.i("Sondre", "isPartof");
                 addCorrectChar(ch, i);
+                partOfWord = true;
             }
+        }
+        if (!partOfWord) {
+            hangman[numOfWrongAnswers].setVisibility(View.VISIBLE);
+            numOfWrongAnswers += 1;
+            //Log.i("Sondre", String.valueOf(numOfWrongAnswers));
+            isOutOfTries();
         }
     }
 
@@ -124,6 +152,15 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         isWordSolved();
 
         //Log.i("Sondre", "addCorrectChar");
+    }
+
+    private void isOutOfTries() {
+        if (numOfWrongAnswers >= 10) {
+            setOutput("DU TAPTE");
+            buttonNewWord.setVisibility(View.VISIBLE);
+            keyboardFragmen.disableAllKeys();
+
+        }
     }
 
     // Runs on seperate thread to not block setText in UI thread.
@@ -136,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         }
         setOutput("FERDIG");
         buttonNewWord.setVisibility(View.VISIBLE);
+        keyboardFragmen.disableAllKeys();
         return true;
         /*new Thread(new Runnable() {
             public void run() {

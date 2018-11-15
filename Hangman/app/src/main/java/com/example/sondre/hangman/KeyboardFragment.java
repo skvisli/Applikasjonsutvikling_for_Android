@@ -27,10 +27,6 @@ public class KeyboardFragment extends Fragment {
     private SharedViewModel sharedViewModel;
     private List<Button> buttons;
     private static final int[] BUTTON_IDS = {
-            R.id.button_a,
-            R.id.button_b,
-            R.id.button_c,
-
             R.id.button_q,
             R.id.button_w,
             R.id.button_e,
@@ -42,6 +38,26 @@ public class KeyboardFragment extends Fragment {
             R.id.button_o,
             R.id.button_p,
             R.id.button_å,
+
+            R.id.button_a,
+            R.id.button_s,
+            R.id.button_d,
+            R.id.button_f,
+            R.id.button_g,
+            R.id.button_h,
+            R.id.button_j,
+            R.id.button_k,
+            R.id.button_l,
+            R.id.button_ø,
+            R.id.button_æ,
+
+            R.id.button_z,
+            R.id.button_x,
+            R.id.button_c,
+            R.id.button_v,
+            R.id.button_b,
+            R.id.button_n,
+            R.id.button_m,
     };
 
     public KeyboardFragment() {
@@ -127,6 +143,12 @@ public class KeyboardFragment extends Fragment {
     public void clearKeysPressed() {
         for (Button button : buttons) {
             button.setEnabled(true);
+        }
+    }
+
+    public void disableAllKeys() {
+        for (Button button : buttons) {
+            button.setEnabled(false);
         }
     }
 }
