@@ -15,6 +15,7 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,29 +28,36 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements KeyboardFragment.OnFragmentKeyPressListener {
-    private String TAG = "Sondre";
     private SharedViewModel sharedViewModel;
-    TextView textViewOutput;
+    private TextView textViewOutput;
     private LinearLayout linearLayoutWord;
+    private Button buttonNewWord;
+    private TextView textViewNumOfWins;
+    private TextView textViewNumOfLosses;
+    private TextView textViewNumOfWords;
+
+
     private String word1 = "hestehode";
     private String word2 = "hårstrikk";
     private String word3 = "datamaskin";
     private String word4 = "android";
     private String word5 = "java";
     private String word6 = "python";
+
     private TextView[] textViewArray;
-    private Context context;
     private String[] localWord;
-    private ImageView imageViewPole;
-    Activity activity;
-    View view;
-    KeyboardFragment keyboardFragmen;
-    private Button buttonNewWord;
-    private int numOfWrongAnswers;
     private ImageView[] hangman = new ImageView[10];
+
+    private KeyboardFragment keyboardFragmen;
+    private int numOfWrongAnswers;
+    private String TAG = "Sondre";
+    private int numOfWordsPlayed = 0;
+    private int numOfWins = 0;
+    private int numOfLosses = 0;
 
 
     private ArrayList<String> wordList = new ArrayList<>();
+    private String[] wordsNotUsedList;
     private String currentWord;
 
     @Override
@@ -57,9 +65,10 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = this;
-        activity = (Activity) context;
-        view = findViewById(android.R.id.content);
+        textViewNumOfLosses = findViewById(R.id.textView_numOfLosses);
+        textViewNumOfWins = findViewById(R.id.textView_numOfWins);
+        textViewNumOfWords = findViewById(R.id.textView_numOfWords);
+
         keyboardFragmen = (KeyboardFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentKeyboard);
 
         wordList.add(word1);
@@ -107,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     }
 
     private void buildWordOnScreen(String word) {
+        numOfWordsPlayed += 1;
+        textViewNumOfWords.setText("Ord " + String.valueOf(numOfWordsPlayed) + " av " + String.valueOf(wordList.size()));
+
         for (ImageView imageView: hangman) {
             imageView.setVisibility(View.INVISIBLE);
         }
@@ -156,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
 
     private void isOutOfTries() {
         if (numOfWrongAnswers >= 10) {
+            numOfLosses += 1;
+            textViewNumOfLosses.setText(String.valueOf(numOfLosses));
             setOutput("DU TAPTE");
             buttonNewWord.setVisibility(View.VISIBLE);
             keyboardFragmen.disableAllKeys();
@@ -171,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
                 return false;
             }
         }
+        numOfWins += 1;
+        textViewNumOfWins.setText(String.valueOf(numOfWins));
         setOutput("FERDIG");
         buttonNewWord.setVisibility(View.VISIBLE);
         keyboardFragmen.disableAllKeys();
