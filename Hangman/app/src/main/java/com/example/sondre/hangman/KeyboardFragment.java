@@ -1,9 +1,7 @@
 package com.example.sondre.hangman;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,6 +30,18 @@ public class KeyboardFragment extends Fragment {
             R.id.button_a,
             R.id.button_b,
             R.id.button_c,
+
+            R.id.button_q,
+            R.id.button_w,
+            R.id.button_e,
+            R.id.button_r,
+            R.id.button_t,
+            R.id.button_y,
+            R.id.button_u,
+            R.id.button_i,
+            R.id.button_o,
+            R.id.button_p,
+            R.id.button_å,
     };
 
     public KeyboardFragment() {
