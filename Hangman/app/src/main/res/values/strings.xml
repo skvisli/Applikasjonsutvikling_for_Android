@@ -1,6 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Hangman</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dialog_text">Do you want to quit the app?</string>
+    <string name="app_name" translatable="false">Hangman</string>
+    <string name="wordCounter">word %1$d of %2$d</string>
+    <string name="dialog_positive_option">Quit</string>
+    <string name="dialog_negative_option">Cancel</string>
+    <string name="help_text">The goal of Hangman is to guess all the letters in the word before the stickman gets hung.</string>
+    <string name="win_text">Correct! Congratulations!</string>
+    <string name="loose_text">Wrong. You are out of tries.</string>
 </resources>

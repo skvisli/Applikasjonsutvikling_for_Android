@@ -20,18 +20,9 @@ public class QuitDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Avslutte?")
-                .setPositiveButton("Avslutt", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onQuit();
-
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mListener.onCancel();
-                    }
-                });
+        builder.setMessage(R.string.dialog_text)
+                .setPositiveButton(R.string.dialog_positive_option, (dialog, id) -> mListener.onQuit())
+                .setNegativeButton(R.string.dialog_negative_option, (dialog, id) -> mListener.onCancel());
         // Create the AlertDialog object and return it
         return builder.create();
     }

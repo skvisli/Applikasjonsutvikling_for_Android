@@ -1,6 +1,7 @@
 package com.example.sondre.hangman;
 
 
+import android.content.Context;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ public class GameLogic {
     private int numOfWordsPlayed = 0;
     private int numOfWins = 0;
     private int numOfLosses = 0;
+    int unicode = 0x1F389;
 
     private String currentWord;
 
@@ -36,7 +38,7 @@ public class GameLogic {
         this.mainActivity = mainActivity;
         mainActivity.setTextViewNumOfWins(numOfWins);
         mainActivity.setTextViewNumOfLosses(numOfLosses);
-        mainActivity.setTextViewOutput("NYTT SPILL");
+        mainActivity.setTextViewOutput("");
         createNewWord();
     }
 
@@ -44,6 +46,7 @@ public class GameLogic {
         initialiseNewWord(pickRandomWord());
         mainActivity.hideNewWordButton();
         mainActivity.hideStartOverButton();
+        mainActivity.setTextViewOutput("");
     }
 
     private String pickRandomWord() {
@@ -94,7 +97,7 @@ public class GameLogic {
         if (numOfWrongAnswers >= 10) {
             numOfLosses += 1;
             mainActivity.setTextViewNumOfLosses(numOfLosses);
-            mainActivity.setTextViewOutput("DU TAPTE");
+            mainActivity.setTextViewOutput(mainActivity.getResources().getString(R.string.loose_text));
             mainActivity.keyboardFragmen.disableAllKeys();
             mainActivity.showSolution(currentWord);
             if (!unusedWordsList.isEmpty()) {
@@ -108,13 +111,12 @@ public class GameLogic {
     public boolean isWordSolved() {
         for (int i = 0; i < localWord.length; i++) {
             if (localWord[i].equals("")) {
-                mainActivity.setTextViewOutput("ikke ferdig");
                 return false;
             }
         }
         numOfWins += 1;
         mainActivity.setTextViewNumOfWins(numOfWins);
-        mainActivity.setTextViewOutput("FERDIG");
+        mainActivity.setTextViewOutput(getEmojiByUnicode(unicode) + mainActivity.getResources().getString(R.string.win_text) + getEmojiByUnicode(unicode));
         mainActivity.keyboardFragmen.disableAllKeys();
         if (unusedWordsList.isEmpty()) {
             mainActivity.showStartOverButton();
@@ -122,5 +124,9 @@ public class GameLogic {
             mainActivity.showNewWordButton();
         }
         return true;
+    }
+
+    public String getEmojiByUnicode(int unicode){
+        return new String(Character.toChars(unicode));
     }
 }

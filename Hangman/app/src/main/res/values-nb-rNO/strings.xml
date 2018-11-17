@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_text">Vil du avslutte appen?</string>
+    <string name="wordCounter" translatable="false">ord %1$d av %2$d</string>
+    <string name="dialog_positive_option">Avslutt</string>
+    <string name="dialog_negative_option">Avbryt</string>
+    <string name="help_text">Målet med Hangman er å gjette alle bokstavene i ordet før strekmannen blir hengt.</string>
+    <string name="win_text" translatable="false">Riktig! Gratulerer!</string>
+    <string name="loose_text">Feil. Du er tom for forsøk.</string>
+</resources>

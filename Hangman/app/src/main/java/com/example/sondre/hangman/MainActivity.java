@@ -1,8 +1,5 @@
 package com.example.sondre.hangman;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -27,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     private static TextView textViewNumOfWords;
     private ImageView imageViewHelpButton;
     private ImageView imageViewPowerButton;
+    private int unicode = 0x1F60A;
 
     private TextView[] textViewArray;
     private ImageView[] hangman = new ImageView[10];
@@ -104,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         textViewNumOfLosses.setText(String.valueOf(numOfLosses));
     }
 
-    public static void setTextViewNumOfWords(int numOfWordsPlayed, int numOfWords) {
-        textViewNumOfWords.setText("Ord " + String.valueOf(numOfWordsPlayed) + " av " + String.valueOf(numOfWords));
+    public void setTextViewNumOfWords(int numOfWordsPlayed, int numOfWords) {
+        textViewNumOfWords.setText(getResources().getString(R.string.wordCounter, numOfWordsPlayed, numOfWords));
     }
 
     public void buildWordOnScreen(String word) {
@@ -187,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     @Override
     public void onQuit() {
         // User touched the dialog's positive button
-        finish();
+        finishAndRemoveTask();
 
     }
 
