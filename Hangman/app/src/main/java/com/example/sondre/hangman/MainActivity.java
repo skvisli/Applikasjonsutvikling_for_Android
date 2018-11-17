@@ -1,82 +1,61 @@
 package com.example.sondre.hangman;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.drawable.AnimatedVectorDrawable;
-import android.net.Uri;
-import android.nfc.Tag;
-import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
-public class MainActivity extends AppCompatActivity implements KeyboardFragment.OnFragmentKeyPressListener {
+public class MainActivity extends AppCompatActivity implements KeyboardFragment.OnFragmentKeyPressListener, QuitDialogFragment.OnDialogChoiceListener {
     private SharedViewModel sharedViewModel;
     private TextView textViewOutput;
     private LinearLayout linearLayoutWord;
     private Button buttonNewWord;
+    private Button buttonStartOver;
     private TextView textViewNumOfWins;
     private TextView textViewNumOfLosses;
-    private TextView textViewNumOfWords;
-
-
-    private String word1 = "hestehode";
-    private String word2 = "hårstrikk";
-    private String word3 = "datamaskin";
-    private String word4 = "android";
-    private String word5 = "java";
-    private String word6 = "python";
+    private static TextView textViewNumOfWords;
+    private ImageView imageViewHelpButton;
+    private ImageView imageViewPowerButton;
 
     private TextView[] textViewArray;
-    private String[] localWord;
     private ImageView[] hangman = new ImageView[10];
 
-    private KeyboardFragment keyboardFragmen;
-    private int numOfWrongAnswers;
+    public KeyboardFragment keyboardFragmen;
+
     private String TAG = "Sondre";
-    private int numOfWordsPlayed = 0;
-    private int numOfWins = 0;
-    private int numOfLosses = 0;
-
-
-    private ArrayList<String> wordList = new ArrayList<>();
-    private String[] wordsNotUsedList;
-    private String currentWord;
+    private GameLogic gameLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // recovering the instance state
+        if (savedInstanceState != null) {
+            Log.i(TAG, "RESTORED");
+            String mGameState = savedInstanceState.getString("TEXT_VIEW_KEY");
+            Log.i(TAG, mGameState);
+        }
 
         textViewNumOfLosses = findViewById(R.id.textView_numOfLosses);
         textViewNumOfWins = findViewById(R.id.textView_numOfWins);
         textViewNumOfWords = findViewById(R.id.textView_numOfWords);
+        imageViewHelpButton = findViewById(R.id.imageView_help);
+        imageViewPowerButton = findViewById(R.id.imageView_power);
+        imageViewHelpButton.setOnClickListener((v) -> openHelp());
+        imageViewPowerButton.setOnClickListener((v) -> powerOff());
 
         keyboardFragmen = (KeyboardFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentKeyboard);
-
-        wordList.add(word1);
-        wordList.add(word2);
-        wordList.add(word3);
-        wordList.add(word4);
-        wordList.add(word5);
-        wordList.add(word6);
 
         hangman[0] = findViewById(R.id.imageView_pole);
         hangman[1] = findViewById(R.id.imageView_roof);
@@ -91,148 +70,130 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
 
         sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
         buttonNewWord = findViewById(R.id.button_newWord);
+        buttonStartOver = findViewById(R.id.button_start_over);
         textViewOutput = findViewById(R.id.textView_output);
         linearLayoutWord = findViewById(R.id.linearLayout_word);
-        sharedViewModel.getAlphabetList().observe(this, new Observer<HashMap>() {
-            @Override
-            public void onChanged(@Nullable HashMap hashMap) {
-                //Log.i("Sondre", hashMap.get('a').toString());
-                //isPartOfWord('a');
-            }
-        });
-        startGame();
+
+        gameLogic = new GameLogic(this);
     }
 
-    private void startGame() {
-        buildWordOnScreen(pickNewWord());
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean("MyBoolean", true);
+        // ... save more data
+        super.onSaveInstanceState(savedInstanceState);
     }
 
-    private String pickNewWord() {
-        Random rand = new Random();
-        String randomWord = wordList.get(rand.nextInt(wordList.size()));
-        currentWord = randomWord;
-        Log.i(TAG, randomWord);
-        return randomWord;
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        boolean mMyBoolean = savedInstanceState.getBoolean("MyBoolean");
+        // ... recover more data
+        Log.i(TAG, String.valueOf(mMyBoolean));
     }
 
-    private void buildWordOnScreen(String word) {
-        numOfWordsPlayed += 1;
-        textViewNumOfWords.setText("Ord " + String.valueOf(numOfWordsPlayed) + " av " + String.valueOf(wordList.size()));
+    public void setTextViewOutput(String text) {
+        textViewOutput.setText(text);
+    }
 
+    public void setTextViewNumOfWins(int numOfWins) {
+        textViewNumOfWins.setText(String.valueOf(numOfWins));
+    }
+
+    public void setTextViewNumOfLosses(int numOfLosses) {
+        textViewNumOfLosses.setText(String.valueOf(numOfLosses));
+    }
+
+    public static void setTextViewNumOfWords(int numOfWordsPlayed, int numOfWords) {
+        textViewNumOfWords.setText("Ord " + String.valueOf(numOfWordsPlayed) + " av " + String.valueOf(numOfWords));
+    }
+
+    public void buildWordOnScreen(String word) {
+        // Clears the hangman-progress from previous sessions
         for (ImageView imageView: hangman) {
             imageView.setVisibility(View.INVISIBLE);
         }
+        // Clears old word from screen
         linearLayoutWord.removeAllViews();
         keyboardFragmen.clearKeysPressed();
+
         textViewArray = new TextView[word.length()];
-        localWord = new String[word.length()];
         for (int i = 0; i < word.length(); i++) {
             TextView textView = new TextView(this);
             textView.setWidth(100);
-            textView.setText("  ");
             textView.setTextSize(32);
             textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            textView.setText("  ");
             textViewArray[i] = textView;
+            Log.i(TAG, String.valueOf(textView));
             linearLayoutWord.addView(textViewArray[i]);
-
-            localWord[i] = "";
-            numOfWrongAnswers = 0;
         }
     }
 
-    public void isPartOfWord(char ch) {
-        boolean partOfWord = false;
-        for (int i = 0; i < currentWord.length(); i++) {
-            char c = currentWord.charAt(i);
-            if (ch == c) {
-                //Log.i("Sondre", "isPartof");
-                addCorrectChar(ch, i);
-                partOfWord = true;
-            }
-        }
-        if (!partOfWord) {
-            hangman[numOfWrongAnswers].setVisibility(View.VISIBLE);
-            numOfWrongAnswers += 1;
-            //Log.i("Sondre", String.valueOf(numOfWrongAnswers));
-            isOutOfTries();
-        }
+    public void addHangmanPart(int numOfWrongAnswers) {
+        hangman[numOfWrongAnswers].setVisibility(View.VISIBLE);
     }
 
-    private void addCorrectChar(char ch, int i) {
-        textViewArray[i].setText(String.valueOf(ch));
-        localWord[i] = String.valueOf(ch);
-        isWordSolved();
-
-        //Log.i("Sondre", "addCorrectChar");
-    }
-
-    private void isOutOfTries() {
-        if (numOfWrongAnswers >= 10) {
-            numOfLosses += 1;
-            textViewNumOfLosses.setText(String.valueOf(numOfLosses));
-            setOutput("DU TAPTE");
-            buttonNewWord.setVisibility(View.VISIBLE);
-            keyboardFragmen.disableAllKeys();
-
-        }
-    }
-
-    // Runs on seperate thread to not block setText in UI thread.
-    public boolean isWordSolved() {
-        for (int i = 0; i < localWord.length; i++) {
-            if (localWord[i].equals("")) {
-                setOutput("ikke ferdig");
-                return false;
-            }
-        }
-        numOfWins += 1;
-        textViewNumOfWins.setText(String.valueOf(numOfWins));
-        setOutput("FERDIG");
+    public void showNewWordButton() {
         buttonNewWord.setVisibility(View.VISIBLE);
-        keyboardFragmen.disableAllKeys();
-        return true;
-        /*new Thread(new Runnable() {
-            public void run() {
-                // a potentially time consuming task
-                for (int i = 0; i < localWord.length; i++) {
-                    if (localWord[i].equals("")) {
-                        setOutput("ikke ferdig");
-                        break;
-                    }
-                    if (i == localWord.length -1) {
-                        setOutput("FERDIG");
-                        runOnUiThread(new Runnable() {
+    }
 
-                            @Override
-                            public void run() { buttonNewWord.setVisibility(View.VISIBLE);
+    public void hideNewWordButton() {
+        buttonNewWord.setVisibility(View.INVISIBLE);
+    }
 
-                            }
-                        });
-                    }
-                }
+    public void showStartOverButton() {
+        buttonStartOver.setVisibility(View.VISIBLE);
+    }
 
-            }
-        }).start();*/
+    public void hideStartOverButton() {
+        buttonStartOver.setVisibility(View.INVISIBLE);
+    }
+
+    public void showSolution(String currentWord) {
+        for (int i = 0; i < currentWord.length(); i++) {
+            addCorrectChar(currentWord.charAt(i), i);
+        }
+    }
+
+    public void addCorrectChar(char ch, int i) {
+        textViewArray[i].setText(String.valueOf(ch));
     }
 
     @Override
     public void onKeyPress(char ch) {
-        isPartOfWord(ch);
+        Log.i(TAG, String.valueOf(ch));
+        gameLogic.isPartOfWord(ch);
     }
 
-    public void setOutput(final String text) {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                textViewOutput.setText(text);
-
-            }
-        });
+    public void newWord(View view) {
+        gameLogic.createNewWord();
     }
 
-    public void newWord (View view) {
-        buildWordOnScreen(pickNewWord());
-        buttonNewWord.setVisibility(View.INVISIBLE);
+    public void startOver(View view) {
+        gameLogic = new GameLogic(this);
     }
+
+    private void openHelp() {
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    private void powerOff() {
+        DialogFragment dialogFragment = new QuitDialogFragment();
+        dialogFragment.show(getSupportFragmentManager(), "QuitDialogFragment");
+    }
+
+    @Override
+    public void onQuit() {
+        // User touched the dialog's positive button
+        finish();
+
+    }
+
+    @Override
+    public void onCancel() {
+        // User touched the dialog's negative button
+    }
+
 }

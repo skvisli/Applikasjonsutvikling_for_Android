@@ -6,29 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/button_start_over"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="15dp"
+        android:onClick="startOver"
+        android:text="Start på nytt"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/textView_output"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/imageView_sad_face"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="@+id/textView_numOfLosses"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView_pole"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_sadface" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView_happy_face"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_sad_face"
         app:layout_constraintEnd_toStartOf="@+id/textView_numOfWins"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView_numOfLosses"
         app:srcCompat="@drawable/ic_smileyface" />
+
+    <ImageView
+        android:id="@+id/imageView_power"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_power_settings_new_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageView_help"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_power"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_help_outline_black_24dp" />
 
     <TextView
         android:id="@+id/textView_numOfLosses"
@@ -37,10 +70,10 @@
         android:layout_marginStart="8dp"
         android:text="0"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_sad_face"
+        app:layout_constraintEnd_toStartOf="@+id/imageView_happy_face"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView5" />
+        app:layout_constraintStart_toEndOf="@+id/imageView_sad_face" />
 
     <TextView
         android:id="@+id/textView_numOfWins"
@@ -50,21 +83,19 @@
         android:layout_marginTop="8dp"
         android:text="0"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_sad_face"
+        app:layout_constraintStart_toEndOf="@+id/imageView_happy_face"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView_numOfWords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:text="ord 0 av 0"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView_sad_face"
         app:layout_constraintStart_toEndOf="@+id/textView_numOfWins"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,11 +103,11 @@
         android:id="@+id/textView_output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Hello World!"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout_word"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout_word"
-        android:layout_marginBottom="8dp"
         tools:layout_editor_absoluteY="274dp" />
 
     <fragment
@@ -90,7 +121,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout_word"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -124,7 +155,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_newWord"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+        app:layout_constraintTop_toBottomOf="@+id/imageView_sad_face">
 
         <ImageView
             android:id="@+id/imageView_lLeg"
@@ -253,7 +284,7 @@
             app:layout_constraintBottom_toTopOf="@+id/button_newWord"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView5"
+            app:layout_constraintTop_toBottomOf="@+id/imageView_sad_face"
             app:srcCompat="@drawable/ic_harm" />
 
         <ImageView
@@ -272,6 +303,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_varm" />
+
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>

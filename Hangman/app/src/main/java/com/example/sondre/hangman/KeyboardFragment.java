@@ -102,6 +102,10 @@ public class KeyboardFragment extends Fragment {
         return view;
     }
 
+    public interface OnFragmentKeyPressListener {
+        void onKeyPress(char ch);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(char ch) {
         if (mListener != null) {
@@ -136,9 +140,6 @@ public class KeyboardFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentKeyPressListener {
-        void onKeyPress(char ch);
-    }
 
     public void clearKeysPressed() {
         for (Button button : buttons) {
