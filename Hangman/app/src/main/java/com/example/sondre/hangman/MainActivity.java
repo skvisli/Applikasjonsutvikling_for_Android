@@ -1,6 +1,5 @@
 package com.example.sondre.hangman;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v4.app.DialogFragment;
@@ -14,36 +13,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements KeyboardFragment.OnFragmentKeyPressListener, QuitDialogFragment.OnDialogChoiceListener {
-    private SharedViewModel sharedViewModel;
-    private TextView textViewOutput;
+    //private SharedViewModel sharedViewModel;
     private LinearLayout linearLayoutWord;
     private Button buttonNewWord;
     private Button buttonStartOver;
     private TextView textViewNumOfWins;
     private TextView textViewNumOfLosses;
-    private static TextView textViewNumOfWords;
+    private TextView textViewOutput;
+    private TextView textViewNumOfWords;
     private ImageView imageViewHelpButton;
     private ImageView imageViewPowerButton;
-    private int unicode = 0x1F60A;
+    private String TAG = "Sondre";
 
     private TextView[] textViewArray;
     private ImageView[] hangman = new ImageView[10];
 
-    public KeyboardFragment keyboardFragmen;
-
-    private String TAG = "Sondre";
+    public KeyboardFragment keyboardFragment;
     private GameLogic gameLogic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // recovering the instance state
-        if (savedInstanceState != null) {
-            Log.i(TAG, "RESTORED");
-            String mGameState = savedInstanceState.getString("TEXT_VIEW_KEY");
-            Log.i(TAG, mGameState);
-        }
 
         textViewNumOfLosses = findViewById(R.id.textView_numOfLosses);
         textViewNumOfWins = findViewById(R.id.textView_numOfWins);
@@ -52,8 +43,10 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         imageViewPowerButton = findViewById(R.id.imageView_power);
         imageViewHelpButton.setOnClickListener((v) -> openHelp());
         imageViewPowerButton.setOnClickListener((v) -> powerOff());
-
-        keyboardFragmen = (KeyboardFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentKeyboard);
+        buttonNewWord = findViewById(R.id.button_newWord);
+        buttonStartOver = findViewById(R.id.button_start_over);
+        textViewOutput = findViewById(R.id.textView_output);
+        linearLayoutWord = findViewById(R.id.linearLayout_word);
 
         hangman[0] = findViewById(R.id.imageView_pole);
         hangman[1] = findViewById(R.id.imageView_roof);
@@ -66,29 +59,27 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         hangman[8] = findViewById(R.id.imageView_rLeg);
         hangman[9] = findViewById(R.id.imageView_face);
 
-        sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
-        buttonNewWord = findViewById(R.id.button_newWord);
-        buttonStartOver = findViewById(R.id.button_start_over);
-        textViewOutput = findViewById(R.id.textView_output);
-        linearLayoutWord = findViewById(R.id.linearLayout_word);
-
+        // TODO: Implement ViewModel
+        //sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel.class);
+        keyboardFragment = (KeyboardFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentKeyboard);
         gameLogic = new GameLogic(this);
     }
 
+/*    // TODO: Implement Save Instance State
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean("MyBoolean", true);
-        // ... save more data
+        Log.i(TAG, "INSTANCE SAVED");
+        savedInstanceState.putString("SAVED_STRING", "exampleString");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        boolean mMyBoolean = savedInstanceState.getBoolean("MyBoolean");
-        // ... recover more data
-        Log.i(TAG, String.valueOf(mMyBoolean));
-    }
+        String savedString = savedInstanceState.getString("SAVED_STRING");
+        Log.i(TAG, "INSTANCE RESTORED");
+        Log.i(TAG, savedString);
+    }*/
 
     public void setTextViewOutput(String text) {
         textViewOutput.setText(text);
@@ -113,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         }
         // Clears old word from screen
         linearLayoutWord.removeAllViews();
-        keyboardFragmen.clearKeysPressed();
+        keyboardFragment.clearKeysPressed();
 
         textViewArray = new TextView[word.length()];
         for (int i = 0; i < word.length(); i++) {
@@ -126,10 +117,6 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
             Log.i(TAG, String.valueOf(textView));
             linearLayoutWord.addView(textViewArray[i]);
         }
-    }
-
-    public void addHangmanPart(int numOfWrongAnswers) {
-        hangman[numOfWrongAnswers].setVisibility(View.VISIBLE);
     }
 
     public void showNewWordButton() {
@@ -148,28 +135,26 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
         buttonStartOver.setVisibility(View.INVISIBLE);
     }
 
-    public void showSolution(String currentWord) {
-        for (int i = 0; i < currentWord.length(); i++) {
-            addCorrectChar(currentWord.charAt(i), i);
-        }
-    }
-
-    public void addCorrectChar(char ch, int i) {
-        textViewArray[i].setText(String.valueOf(ch));
-    }
-
-    @Override
-    public void onKeyPress(char ch) {
-        Log.i(TAG, String.valueOf(ch));
-        gameLogic.isPartOfWord(ch);
-    }
-
     public void newWord(View view) {
         gameLogic.createNewWord();
     }
 
     public void startOver(View view) {
         gameLogic = new GameLogic(this);
+    }
+
+    public void addCorrectChar(char ch, int i) {
+        textViewArray[i].setText(String.valueOf(ch));
+    }
+
+    public void addHangmanPart(int numOfWrongAnswers) {
+        hangman[numOfWrongAnswers].setVisibility(View.VISIBLE);
+    }
+
+    public void showSolution(String currentWord) {
+        for (int i = 0; i < currentWord.length(); i++) {
+            addCorrectChar(currentWord.charAt(i), i);
+        }
     }
 
     private void openHelp() {
@@ -180,6 +165,12 @@ public class MainActivity extends AppCompatActivity implements KeyboardFragment.
     private void powerOff() {
         DialogFragment dialogFragment = new QuitDialogFragment();
         dialogFragment.show(getSupportFragmentManager(), "QuitDialogFragment");
+    }
+
+    @Override
+    public void onKeyPress(char ch) {
+        Log.i(TAG, String.valueOf(ch));
+        gameLogic.isPartOfWord(ch);
     }
 
     @Override

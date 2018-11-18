@@ -7,4 +7,6 @@
     <string name="help_text">Målet med Hangman er å gjette alle bokstavene i ordet før strekmannen blir hengt.</string>
     <string name="win_text" translatable="false">Riktig! Gratulerer!</string>
     <string name="loose_text">Feil. Du er tom for forsøk.</string>
+    <string name="next_word">Neste ord</string>
+    <string name="restart">Start spill på nytt</string>
 </resources>

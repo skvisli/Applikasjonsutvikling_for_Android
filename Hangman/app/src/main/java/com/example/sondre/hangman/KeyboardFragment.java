@@ -14,7 +14,6 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link KeyboardFragment.OnFragmentKeyPressListener} interface
  * to handle interaction events.
@@ -64,12 +63,6 @@ public class KeyboardFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment KeyboardFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static KeyboardFragment newInstance() {
         KeyboardFragment fragment = new KeyboardFragment();
@@ -89,28 +82,13 @@ public class KeyboardFragment extends Fragment {
         buttons = new ArrayList<>(BUTTON_IDS.length);
         for(int id : BUTTON_IDS) {
             final Button button = view.findViewById(id);
-            button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mListener.onKeyPress(button.getText().charAt(0));
-                    button.setEnabled(false);
-                    Log.i("Sondre", "clicked");
-                }
+            button.setOnClickListener(v -> {
+                mListener.onKeyPress(button.getText().charAt(0));
+                button.setEnabled(false);
             });
             buttons.add(button);
         }
-
         return view;
-    }
-
-    public interface OnFragmentKeyPressListener {
-        void onKeyPress(char ch);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(char ch) {
-        if (mListener != null) {
-            //mListener.onFragmentInteraction(ch);
-        }
     }
 
     @Override
@@ -130,16 +108,10 @@ public class KeyboardFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+    public interface OnFragmentKeyPressListener {
+        void onKeyPress(char ch);
+
+    }
 
     public void clearKeysPressed() {
         for (Button button : buttons) {

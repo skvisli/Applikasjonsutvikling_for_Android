@@ -8,4 +8,6 @@
     <string name="help_text">The goal of Hangman is to guess all the letters in the word before the stickman gets hung.</string>
     <string name="win_text">Correct! Congratulations!</string>
     <string name="loose_text">Wrong. You are out of tries.</string>
+    <string name="next_word">Next word</string>
+    <string name="restart">Restart game</string>
 </resources>

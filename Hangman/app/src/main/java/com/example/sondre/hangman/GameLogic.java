@@ -1,45 +1,60 @@
 package com.example.sondre.hangman;
 
-
-import android.content.Context;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class GameLogic {
 
-    private ArrayList<String> wordsList = new ArrayList<>(Arrays.asList(
-            "hestehode",
-            "hårstrikk"
-            /*"hårstrikk",
-            "datamaskin",
-            "android",
-            "java",
-            "python"*/)
-    );
-    private List<String> unusedWordsList = new ArrayList<>(wordsList);
-
+    private ArrayList<String> wordsList = new ArrayList<>();
+    private ArrayList<String> unusedWordsList;
+    private String currentWord;
     private String[] localWord;
+
     private int numOfWrongAnswers;
     private int numOfWordsPlayed = 0;
     private int numOfWins = 0;
     private int numOfLosses = 0;
     int unicode = 0x1F389;
-
-    private String currentWord;
-
     private String TAG = "Sondre";
-
-    MainActivity mainActivity;
+    private MainActivity mainActivity;
 
     public GameLogic(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+        Log.i(TAG, Locale.getDefault().getLanguage());
+        if (Locale.getDefault().getLanguage().equals("nb") || Locale.getDefault().getLanguage().equals("nn")){
+            getWordsFromFile("words_no");
+        } else {
+            getWordsFromFile("words");
+        }
+        unusedWordsList = new ArrayList<>(wordsList);
         mainActivity.setTextViewNumOfWins(numOfWins);
         mainActivity.setTextViewNumOfLosses(numOfLosses);
         mainActivity.setTextViewOutput("");
         createNewWord();
+    }
+
+    private void getWordsFromFile(String filepath) {
+        int resource =  mainActivity.getResources().getIdentifier(filepath, "raw", mainActivity.getPackageName());
+        InputStream in = mainActivity.getResources().openRawResource(resource);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                wordsList.add(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createNewWord() {
@@ -62,8 +77,7 @@ public class GameLogic {
         numOfWordsPlayed += 1;
         numOfWrongAnswers = 0;
         mainActivity.setTextViewNumOfWords(numOfWordsPlayed, wordsList.size());
-        mainActivity.keyboardFragmen.clearKeysPressed();
-
+        mainActivity.keyboardFragment.clearKeysPressed();
         mainActivity.buildWordOnScreen(word);
 
         //Creates a local copy of the word to avoid getting the chars from the TextViews in MainActivity for each comparison
@@ -77,7 +91,6 @@ public class GameLogic {
         for (int i = 0; i < currentWord.length(); i++) {
             char c = currentWord.charAt(i);
             if (ch == c) {
-                //Log.i("Sondre", "isPartof");
                 mainActivity.addCorrectChar(ch, i);
                 localWord[i] = String.valueOf(ch);
                 partOfWord = true;
@@ -93,21 +106,6 @@ public class GameLogic {
         }
     }
 
-    private void isOutOfTries() {
-        if (numOfWrongAnswers >= 10) {
-            numOfLosses += 1;
-            mainActivity.setTextViewNumOfLosses(numOfLosses);
-            mainActivity.setTextViewOutput(mainActivity.getResources().getString(R.string.loose_text));
-            mainActivity.keyboardFragmen.disableAllKeys();
-            mainActivity.showSolution(currentWord);
-            if (!unusedWordsList.isEmpty()) {
-                mainActivity.showNewWordButton();
-            } else {
-                mainActivity.showStartOverButton();
-            }
-        }
-    }
-
     public boolean isWordSolved() {
         for (int i = 0; i < localWord.length; i++) {
             if (localWord[i].equals("")) {
@@ -117,13 +115,28 @@ public class GameLogic {
         numOfWins += 1;
         mainActivity.setTextViewNumOfWins(numOfWins);
         mainActivity.setTextViewOutput(getEmojiByUnicode(unicode) + mainActivity.getResources().getString(R.string.win_text) + getEmojiByUnicode(unicode));
-        mainActivity.keyboardFragmen.disableAllKeys();
+        mainActivity.keyboardFragment.disableAllKeys();
         if (unusedWordsList.isEmpty()) {
             mainActivity.showStartOverButton();
         } else {
             mainActivity.showNewWordButton();
         }
         return true;
+    }
+
+    private void isOutOfTries() {
+        if (numOfWrongAnswers >= 10) {
+            numOfLosses += 1;
+            mainActivity.setTextViewNumOfLosses(numOfLosses);
+            mainActivity.setTextViewOutput(mainActivity.getResources().getString(R.string.loose_text));
+            mainActivity.keyboardFragment.disableAllKeys();
+            mainActivity.showSolution(currentWord);
+            if (!unusedWordsList.isEmpty()) {
+                mainActivity.showNewWordButton();
+            } else {
+                mainActivity.showStartOverButton();
+            }
+        }
     }
 
     public String getEmojiByUnicode(int unicode){
